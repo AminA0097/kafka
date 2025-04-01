@@ -1,10 +1,8 @@
 package com.EmailVerfication.EmaiService.Service;
 
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
-@Service
-public class EmailService {
-    private String emailTemplate(String name,String link){
-        return "";
-    }
+public interface EmailService {
+    String sendEmail(String email);
+    boolean verify(String email,String code);
 }
