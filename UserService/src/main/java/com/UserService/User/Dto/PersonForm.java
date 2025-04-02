@@ -2,7 +2,7 @@ package com.UserService.User.Dto;
 
 import lombok.Data;
 
-@Data
+
 public class PersonForm {
     private String phone;
     private String email;

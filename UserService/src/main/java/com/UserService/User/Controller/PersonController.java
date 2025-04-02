@@ -23,10 +23,5 @@ public class PersonController {
         personService.register(registerForm);
         return String.format("Successfully registered: %s", registerForm.getName());
     }
-    @GetMapping("/kafka")
-    public String kafka() {
-        personService.sendmsg("Amin");
-        return "Successfully sendmsg";
-    }
 
 }

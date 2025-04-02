@@ -1,5 +1,6 @@
 package com.UserService.User.Service;
 
+import com.UserService.User.Configs.KafkaConfig;
 import com.UserService.User.Validation.PassWordConfig;
 import com.UserService.User.Dto.*;
 import com.UserService.User.Entities.PersonEntity;
@@ -26,6 +27,7 @@ public class PersonServiceImpl implements PersonService {
     private final PassWordConfig passWordConfig;
     private final EmailValidator emailValidator;
     private final PassWordValidator passWordValidator;
+    private final KafkaConfig kafkaConfig;
     private final KafkaTemplate<String, String> kafkaTemplate;
     public PersonServiceImpl(
             PersonRepo personRepo,
@@ -34,6 +36,7 @@ public class PersonServiceImpl implements PersonService {
             PassWordConfig passWordConfig,
             EmailValidator emailValidator,
             PassWordValidator passWordValidator,
+            KafkaConfig kafkaConfig,
             KafkaTemplate<String, String> kafkaTemplate
     ) {
         this.personRepo = personRepo;
@@ -42,6 +45,7 @@ public class PersonServiceImpl implements PersonService {
         this.passWordConfig = passWordConfig;
         this.emailValidator = emailValidator;
         this.passWordValidator = passWordValidator;
+        this.kafkaConfig = kafkaConfig;
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -58,6 +62,7 @@ public class PersonServiceImpl implements PersonService {
         UserEntity user = userRepo.findUserByUserName(registerForm.getUserName());
         UserEntity userEntity = new UserEntity();
         PersonEntity personEntity = new PersonEntity();
+        KafkaMsg kafkaMsg = new KafkaMsg();
         if(person != null) {
             throw new Exception("This person already exists");
         }
@@ -81,10 +86,19 @@ public class PersonServiceImpl implements PersonService {
             userEntity.setPersonEntity(personEntity1);
             userEntity.setPassWord(passWordConfig.PassWordConfig().encode(registerForm.getPassword()));
             userRepo.save(userEntity);
-    }
-    @Override
-    public void sendmsg(String msg){
-        kafkaTemplate.send("test-group", msg);
+            kafkaMsg.setEmail(registerForm.getEmail());
+            kafkaMsg.setStatus(0);
+            kafkaMsg.setRead(0);
+            kafkaMsg.setTopic(kafkaConfig.UnverifiedTopic().toString());
+            sendToEmail(kafkaMsg);
     }
 
+    @Override
+    public void sendToEmail(KafkaMsg kafkaMsg) throws Exception {
+        String msg = kafkaMsg.getEmail() + "," +
+                kafkaMsg.getStatus() + "," +
+                kafkaMsg.getRead();
+        kafkaTemplate.send(kafkaMsg.getTopic(),kafkaMsg.getEmail(),msg);
+
+    }
 }
