@@ -3,23 +3,31 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.EmailVerfication.EmaiService.Config.DigitCode;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class EmailServiceImpl implements EmailService {
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
     private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
     private final JwtService jwtService;
+    private final JavaMailSender mailSender;
     private final DigitCode digitCode;
-    private JavaMailSender mailSender;
     public EmailServiceImpl(
             JwtService jwtService,
-            DigitCode digitCode) {
+            DigitCode digitCode,
+            JavaMailSender mailSender) {
         this.jwtService = jwtService;
         this.digitCode = digitCode;
+        this.mailSender = mailSender;
     }
     @Override
     public String sendEmail(String email) {
@@ -36,12 +44,19 @@ public class EmailServiceImpl implements EmailService {
                 + "</div>"
                 + "</body>"
                 + "</html>";
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Welcome to our app!");
-        message.setText(htmlMessage);
-        mailSender.send(message);
-        return htmlMessage;
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("Confirm Your Account");
+            mimeMessageHelper.setText(htmlMessage,true);
+            mailSender.send(mimeMessage);
+        }catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return "Done!";
     }
     @Override
     public boolean verify(String email,String code){

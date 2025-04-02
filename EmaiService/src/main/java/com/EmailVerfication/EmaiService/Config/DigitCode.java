@@ -1,15 +1,19 @@
 package com.EmailVerfication.EmaiService.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 @Service
 public class DigitCode {
-    private final String secret = "Amin";
-    private final int expiryTime = 5;
-    private final int count = 8;
+    @Value("${secretKey}")
+    private String secret;
+    @Value("${expiryTime}")
+    private int expiryTime;
+    @Value("${count}")
+    private int count;
     private static final Logger log = LoggerFactory.getLogger(DigitCode.class);
 
     private long getTime() {
