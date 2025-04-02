@@ -3,6 +3,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.EmailVerfication.EmaiService.Config.DigitCode;
+import com.EmailVerfication.EmaiService.Kafka.KafkaService;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
@@ -21,13 +22,17 @@ public class EmailServiceImpl implements EmailService {
     private final JwtService jwtService;
     private final JavaMailSender mailSender;
     private final DigitCode digitCode;
+    private final KafkaService kafkaService;
     public EmailServiceImpl(
             JwtService jwtService,
             DigitCode digitCode,
-            JavaMailSender mailSender) {
+            JavaMailSender mailSender,
+            KafkaService kafkaService
+    ) {
         this.jwtService = jwtService;
         this.digitCode = digitCode;
         this.mailSender = mailSender;
+        this.kafkaService = kafkaService;
     }
     @Override
     public String sendEmail(String email) {
@@ -62,5 +67,8 @@ public class EmailServiceImpl implements EmailService {
     public boolean verify(String email,String code){
         return digitCode.verify(email,code);
     }
+    @Override
+    public void readMsg() {
 
+    }
 }

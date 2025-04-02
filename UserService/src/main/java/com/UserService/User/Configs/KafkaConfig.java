@@ -8,10 +8,10 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfig {
-    private static final String Unverified_Topic = "Unverified";
-    private static final String verified_Topic = "verified";
-    private static final String READ_TOPIC = "read";
-    private static final long delTime = 1000 * 60 * 5;
+    public  String Unverified_Topic = "Unverified";
+    public  String verified_Topic = "verified";
+    public  String READ_TOPIC = "read";
+    public  long delTime = 1000 * 60 * 5;
     @Bean
     public NewTopic UnverifiedTopic() {
         return TopicBuilder.name(Unverified_Topic)

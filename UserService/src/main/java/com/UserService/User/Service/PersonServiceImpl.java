@@ -89,15 +89,16 @@ public class PersonServiceImpl implements PersonService {
             kafkaMsg.setEmail(registerForm.getEmail());
             kafkaMsg.setStatus(0);
             kafkaMsg.setRead(0);
-            kafkaMsg.setTopic(kafkaConfig.UnverifiedTopic().toString());
+            kafkaMsg.setTopic(kafkaConfig.Unverified_Topic);
             sendToEmail(kafkaMsg);
     }
 
     @Override
     public void sendToEmail(KafkaMsg kafkaMsg) throws Exception {
-        String msg = kafkaMsg.getEmail() + "," +
-                kafkaMsg.getStatus() + "," +
-                kafkaMsg.getRead();
+        String msg = String.format("%s,%d,%d",
+                kafkaMsg.getEmail(),
+                kafkaMsg.getStatus(),
+                kafkaMsg.getRead());
         kafkaTemplate.send(kafkaMsg.getTopic(),kafkaMsg.getEmail(),msg);
 
     }
