@@ -12,6 +12,7 @@
 	<modules>
 		<module>UserService</module>
 		<module>EmaiService</module>
+		<module>KafkaService</module>
 	</modules>
 	<groupId>com.kafkaMicroService</groupId>
 	<artifactId>kafka</artifactId>

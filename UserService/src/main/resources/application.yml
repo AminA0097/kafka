@@ -12,14 +12,6 @@ spring:
       hibernate:
         format_sql: true
         database: postgresql
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      auto-offset-reset: earliest
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    admin:
-      auto-create: true
+
 server:
   port: 8080

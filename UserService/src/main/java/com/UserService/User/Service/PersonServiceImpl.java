@@ -1,6 +1,4 @@
 package com.UserService.User.Service;
-
-import com.UserService.User.Configs.KafkaConfig;
 import com.UserService.User.Validation.PassWordConfig;
 import com.UserService.User.Dto.*;
 import com.UserService.User.Entities.PersonEntity;
@@ -27,7 +25,6 @@ public class PersonServiceImpl implements PersonService {
     private final PassWordConfig passWordConfig;
     private final EmailValidator emailValidator;
     private final PassWordValidator passWordValidator;
-    private final KafkaConfig kafkaConfig;
     private final KafkaTemplate<String, String> kafkaTemplate;
     public PersonServiceImpl(
             PersonRepo personRepo,
@@ -36,7 +33,6 @@ public class PersonServiceImpl implements PersonService {
             PassWordConfig passWordConfig,
             EmailValidator emailValidator,
             PassWordValidator passWordValidator,
-            KafkaConfig kafkaConfig,
             KafkaTemplate<String, String> kafkaTemplate
     ) {
         this.personRepo = personRepo;
@@ -45,7 +41,6 @@ public class PersonServiceImpl implements PersonService {
         this.passWordConfig = passWordConfig;
         this.emailValidator = emailValidator;
         this.passWordValidator = passWordValidator;
-        this.kafkaConfig = kafkaConfig;
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -89,7 +84,7 @@ public class PersonServiceImpl implements PersonService {
             kafkaMsg.setEmail(registerForm.getEmail());
             kafkaMsg.setStatus(0);
             kafkaMsg.setRead(0);
-            kafkaMsg.setTopic(kafkaConfig.Unverified_Topic);
+            kafkaMsg.setTopic("Unverified_Topic");
             sendToEmail(kafkaMsg);
     }
 
