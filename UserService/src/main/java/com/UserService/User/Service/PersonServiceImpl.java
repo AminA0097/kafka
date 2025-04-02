@@ -10,6 +10,7 @@ import com.UserService.User.Validation.PassWordValidator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.UserService.User.Validation.EmailValidator;
@@ -25,13 +26,15 @@ public class PersonServiceImpl implements PersonService {
     private final PassWordConfig passWordConfig;
     private final EmailValidator emailValidator;
     private final PassWordValidator passWordValidator;
+    private final KafkaTemplate<String, String> kafkaTemplate;
     public PersonServiceImpl(
             PersonRepo personRepo,
             PersonMapper personMapper,
             UserRepo userRepo,
             PassWordConfig passWordConfig,
             EmailValidator emailValidator,
-            PassWordValidator passWordValidator
+            PassWordValidator passWordValidator,
+            KafkaTemplate<String, String> kafkaTemplate
     ) {
         this.personRepo = personRepo;
         this.personMapper = personMapper;
@@ -39,6 +42,7 @@ public class PersonServiceImpl implements PersonService {
         this.passWordConfig = passWordConfig;
         this.emailValidator = emailValidator;
         this.passWordValidator = passWordValidator;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Override
@@ -77,6 +81,10 @@ public class PersonServiceImpl implements PersonService {
             userEntity.setPersonEntity(personEntity1);
             userEntity.setPassWord(passWordConfig.PassWordConfig().encode(registerForm.getPassword()));
             userRepo.save(userEntity);
+    }
+    @Override
+    public void sendmsg(String msg){
+        kafkaTemplate.send("test-group", msg);
     }
 
 }
