@@ -1,7 +1,9 @@
 package com.UserService.User.Controller;
 
+import com.UserService.User.Dto.UserDto;
 import com.UserService.User.Forms.VerifyForm;
 import com.UserService.User.Forms.RegisterForm;
+import com.UserService.User.Res.AnyEntityResponse;
 import com.UserService.User.Service.UserInterface;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,5 +22,9 @@ public class PersonController {
     @PostMapping("/verifyAccount")
     public boolean chabgeStatus(@RequestBody VerifyForm verifyForm)throws Exception{
         return userInterface.verifyEmail(verifyForm);
+    }
+    @GetMapping("/alluser")
+    public AnyEntityResponse<UserDto> chabgeStatus()throws Exception{
+        return userInterface.getAllUsers(10,1);
     }
 }

@@ -37,11 +37,11 @@ public class DigitCode {
         }
         return String.format("%08d", code);
     }
-    public boolean verify(String email, String code) {
+    public boolean verify(String email, String code)throws Exception{
         if (encode(email).equals(code)){
             return true;
         }
-        return false;
+        throw new Exception("");
     }
     public String getCode(String email) {
         return encode(email);

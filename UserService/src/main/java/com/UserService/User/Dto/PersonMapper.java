@@ -1,7 +1,7 @@
 package com.UserService.User.Dto;
 
 import com.UserService.User.Entities.UserEntity;
-import com.UserService.User.Res.PersonResponse;
+import com.UserService.User.Res.AnyEntityResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -10,15 +10,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class PersonMapper {
-    public PersonResponse<UserDto> toEntityResponse(Page<UserEntity> all) {
-        PersonResponse<UserDto> personResponseList = new PersonResponse<>();
+    public AnyEntityResponse<UserDto> toEntityResponse(Page<UserEntity> all) {
+        AnyEntityResponse<UserDto> anyEntityResponse = new AnyEntityResponse<>();
         List<UserDto> collect = all.stream().map(UserDto::new).collect(Collectors.toList());
-        personResponseList.setContent(collect);
-        personResponseList.setTotal(all.getTotalElements());
-        personResponseList.setPageNumber(all.getNumber() + 1);
-        personResponseList.setPageSize(all.getSize());
-        personResponseList.setTotalPages(all.getTotalPages());
-        return personResponseList;
+        anyEntityResponse.setContent(collect);
+        anyEntityResponse.setTotal(all.getTotalElements());
+        anyEntityResponse.setPageNumber(all.getNumber() + 1);
+        anyEntityResponse.setPageSize(all.getSize());
+        anyEntityResponse.setTotalPages(all.getTotalPages());
+        return anyEntityResponse;
     }
 
 }

@@ -14,6 +14,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/api/person/register").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/person/verifyAccount").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/person/alluser").permitAll()
                         .anyRequest().permitAll()
                 );
         return http.build();

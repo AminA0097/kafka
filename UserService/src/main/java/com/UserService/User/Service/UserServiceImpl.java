@@ -2,7 +2,7 @@ package com.UserService.User.Service;
 import com.UserService.User.Configs.DigitCode;
 import com.UserService.User.Forms.*;
 import com.UserService.User.Mapper.EmailTemp;
-import com.UserService.User.Res.UserResponse;
+import com.UserService.User.Res.AnyEntityResponse;
 import com.UserService.User.Validation.PassWordConfig;
 import com.UserService.User.Dto.*;
 import com.UserService.User.Entities.PersonEntity;
@@ -117,9 +117,11 @@ public class UserServiceImpl implements UserInterface {
     @Override
     public boolean verifyEmail(VerifyForm verifyForm) throws Exception {
         if(digitCode.verify(verifyForm.getEmail(),verifyForm.getCode())){
-            changeUserStatus(verifyForm.getUserName());
+            UserEntity user = userRepo.findUserByUserName(verifyForm.getUserName());
+            user.setEnabled(true);
+            userRepo.save(user);
         };
-        throw new Exception("Invalid email");
+        throw new Exception("Failed to verify email");
     }
     @Override
     public boolean changeUserStatus(String userName) {
@@ -131,10 +133,10 @@ public class UserServiceImpl implements UserInterface {
     }
 
     @Override
-    public UserResponse<UserDto> getAllUsers(Integer pageSize, Integer pageNumber) {
+    public AnyEntityResponse<UserDto> getAllUsers(Integer pageSize, Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber -1 , pageSize);
         Page<UserEntity> all = userRepo.findAll(pageable);
-        return null;
+        return personMapper.toEntityResponse(all);
     }
 
     @Override
