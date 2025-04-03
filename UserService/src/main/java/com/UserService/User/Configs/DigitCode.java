@@ -8,11 +8,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Service
 public class DigitCode {
-    @Value("${secretKey}")
+    @Value("${spring.secretKey}")
     private String secret;
-    @Value("${expiryTime}")
+    @Value("${spring.expiryTime}")
     private int expiryTime;
-    @Value("${count}")
+    @Value("${spring.count}")
     private int count;
     private static final Logger log = LoggerFactory.getLogger(DigitCode.class);
 

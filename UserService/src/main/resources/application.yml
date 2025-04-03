@@ -1,4 +1,7 @@
 spring:
+  count : 5
+  secretKey : "Amin"
+  expiryTime : 5
   datasource:
     url: jdbc:postgresql://localhost:5432/kafkaDb
     username: postgres
