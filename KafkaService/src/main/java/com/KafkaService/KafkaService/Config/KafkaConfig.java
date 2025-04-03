@@ -20,8 +20,8 @@ import java.util.concurrent.ExecutionException;
 @Configuration
 public class KafkaConfig {
 
-    public  String unverifiedTopic = "Unverified";
-    public  String verifiedTopic = "verified";
+    public  String incomingTopic = "incomingTopic";
+    public  String responseTopic = "responseTopic";
     public  String readTopic = "read";
     public  long delTime = 1000 * 60 * 5;
     private static final Logger log = LoggerFactory.getLogger(KafkaConfig.class);
@@ -33,9 +33,9 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic UnverifiedTopic() throws ExecutionException, InterruptedException {
-        if (!checkTopic(unverifiedTopic)) {
+        if (!checkTopic(incomingTopic)) {
             log.info("Creating Unverified Topic");
-            return TopicBuilder.name(unverifiedTopic)
+            return TopicBuilder.name(incomingTopic)
                     .partitions(3)
                     .replicas(1)
                     .build();
@@ -46,9 +46,9 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic verifiedTopic()throws ExecutionException, InterruptedException {
-        if(!checkTopic(verifiedTopic)) {
+        if(!checkTopic(responseTopic)) {
             log.info("Creating Verified Topic");
-            return TopicBuilder.name(verifiedTopic)
+            return TopicBuilder.name(responseTopic)
                     .partitions(3)
                     .replicas(1)
                     .build();

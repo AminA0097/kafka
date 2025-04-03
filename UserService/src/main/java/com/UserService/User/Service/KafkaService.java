@@ -16,7 +16,7 @@ public class KafkaService {
         this.personService = personService;
     }
 
-    @KafkaListener(topics = "verified",groupId = "verified-group")
+    @KafkaListener(topics = "responseTopic",groupId = "verified-group")
     public void listen(ConsumerRecord<String, String> record) {
         String[] split = record.value().split(",");
         String email = split[0];
