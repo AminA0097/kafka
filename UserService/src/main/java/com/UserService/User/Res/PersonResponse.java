@@ -1,4 +1,4 @@
-package com.UserService.User.Dto;
+package com.UserService.User.Res;
 import java.util.List;
 public class PersonResponse<T> {
     private List<T> content;

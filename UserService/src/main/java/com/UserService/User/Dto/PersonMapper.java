@@ -1,7 +1,7 @@
 package com.UserService.User.Dto;
 
-import com.UserService.User.Entities.PersonEntity;
 import com.UserService.User.Entities.UserEntity;
+import com.UserService.User.Res.PersonResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
