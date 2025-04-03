@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KafkaMsg {
-    private String key;
-    private Integer status;
+public class EmailReq {
+    private String to;
+    private String subject;
+    private String body;
 }
-

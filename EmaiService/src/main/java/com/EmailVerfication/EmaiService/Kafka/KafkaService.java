@@ -1,4 +1,5 @@
 package com.EmailVerfication.EmaiService.Kafka;
+import com.EmailVerfication.EmaiService.Dto.EmailReq;
 import com.EmailVerfication.EmaiService.Service.EmailService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -17,7 +18,13 @@ public class KafkaService {
     @KafkaListener(topics = "incomingTopic")
     public void listen(ConsumerRecord<String, String> record) {
         String[] data = record.value().split(",");
+        EmailReq emailReq = new EmailReq(
+                record.key(),
+                data[0],
+                data[1]
+        );
+
         log.info("Received record: " + record.key());
-        emailService.sendEmail(data);
+        emailService.sendEmail(emailReq);
     }
 }

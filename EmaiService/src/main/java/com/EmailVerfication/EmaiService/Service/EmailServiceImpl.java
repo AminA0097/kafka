@@ -1,4 +1,6 @@
 package com.EmailVerfication.EmaiService.Service;
+import com.EmailVerfication.EmaiService.Dto.EmailReq;
+import com.EmailVerfication.EmaiService.Dto.EmailStatus;
 import com.EmailVerfication.EmaiService.Dto.KafkaMsg;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,22 +25,25 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
     @Override
-    public void sendEmail(String[] content) {
-        String toEmail = content[0];
-        String subject = content[1];
+    public void sendEmail(EmailReq emailReq) {
+        String toEmail = emailReq.getTo();
+        String subject = emailReq.getSubject();
+        String body = emailReq.getBody();
         KafkaMsg kafkaMsg = new KafkaMsg();
+        kafkaMsg.setKey(toEmail);
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
             mimeMessageHelper.setFrom(fromEmail);
             mimeMessageHelper.setTo(toEmail);
             mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(body, true);
             mailSender.send(mimeMessage);
+            kafkaMsg.setStatus(EmailStatus.SUCCESS.getValue());
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error("Failed to send email to %s", toEmail);
+            kafkaMsg.setStatus(EmailStatus.FAILURE.getValue());
         }
-        kafkaMsg.setKey(toEmail);
-        kafkaMsg.setStatus(1);
         kafkaTemplate.send("responseTopic", kafkaMsg.getKey(),kafkaMsg.getStatus().toString());
         log.info("Email sent successfully");
         log.info("Message sent successfully");
