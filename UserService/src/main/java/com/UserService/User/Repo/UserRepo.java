@@ -1,6 +1,9 @@
 package com.UserService.User.Repo;
 
+import com.UserService.User.Entities.PersonEntity;
 import com.UserService.User.Entities.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,4 +14,5 @@ public interface UserRepo extends JpaRepository<UserEntity, Integer> {
     Long findUser(Integer id);
     @Query("select p from UserEntity p where p.userName =?1")
     UserEntity findUserByUserName(String userName);
+    Page<UserEntity> findAll(Pageable pageable);
 }

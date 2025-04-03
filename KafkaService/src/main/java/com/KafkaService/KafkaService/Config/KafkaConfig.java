@@ -34,34 +34,40 @@ public class KafkaConfig {
     @Bean
     public NewTopic UnverifiedTopic() throws ExecutionException, InterruptedException {
         if (!checkTopic(unverifiedTopic)) {
+            log.info("Creating Unverified Topic");
             return TopicBuilder.name(unverifiedTopic)
                     .partitions(3)
                     .replicas(1)
                     .build();
         }
+        log.error("Read Unverified Exists!");
         return null;
     }
 
     @Bean
     public NewTopic verifiedTopic()throws ExecutionException, InterruptedException {
         if(!checkTopic(verifiedTopic)) {
+            log.info("Creating Verified Topic");
             return TopicBuilder.name(verifiedTopic)
                     .partitions(3)
                     .replicas(1)
                     .build();
         }
+        log.error("Read Verified Exists!");
         return null;
     }
 
     @Bean
     public NewTopic processedUsersTopic() throws ExecutionException, InterruptedException {
         if (!checkTopic(readTopic)) {
+            log.info("Creating Read Topic");
             return TopicBuilder.name(readTopic)
                     .partitions(3)
                     .replicas(1)
                     .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(delTime))
                     .build();
         }
+        log.error("Read Topic Exists!");
         return null;
     }
     @Bean
@@ -69,7 +75,11 @@ public class KafkaConfig {
         return new KafkaAdmin(Collections.singletonMap("bootstrap.servers", "localhost:9092"));
     }
     private boolean checkTopic(String topicName) throws ExecutionException, InterruptedException {
-        ListTopicsResult listTopicsResult = adminClient(kafkaAdmin()).listTopics();
-        return listTopicsResult.names().get().contains(topicName);
+        try {
+            ListTopicsResult listTopicsResult = adminClient(kafkaAdmin()).listTopics();
+            return listTopicsResult.names().get().contains(topicName);
+        }catch (Exception e) {
+            return false;
+        }
     }
 }

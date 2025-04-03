@@ -6,6 +6,8 @@ import com.UserService.User.Entities.UserEntity;
 import com.UserService.User.Repo.PersonRepo;
 import com.UserService.User.Repo.UserRepo;
 import com.UserService.User.Validation.PassWordValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import com.UserService.User.Validation.EmailValidator;
 @Service
 
 public class PersonServiceImpl implements PersonService {
+    private static final Logger log = LoggerFactory.getLogger(PersonServiceImpl.class);
     private final PersonRepo personRepo;
     private final UserRepo userRepo;
     private final PersonMapper personMapper;
@@ -45,9 +48,9 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonResponse<PersonDto> getAll(Integer pageSize, Integer pageNumber) {
+    public PersonResponse<UserDto> getAll(Integer pageSize, Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber -1 , pageSize);
-        Page<PersonEntity> all = personRepo.findAll(pageable);
+        Page<UserEntity> all = userRepo.findAll(pageable);
         return personMapper.toEntityResponse(all);
     }
     @Override
@@ -84,7 +87,7 @@ public class PersonServiceImpl implements PersonService {
             kafkaMsg.setEmail(registerForm.getEmail());
             kafkaMsg.setStatus(0);
             kafkaMsg.setRead(0);
-            kafkaMsg.setTopic("Unverified_Topic");
+            kafkaMsg.setTopic("Unverified");
             sendToEmail(kafkaMsg);
     }
 
@@ -96,5 +99,14 @@ public class PersonServiceImpl implements PersonService {
                 kafkaMsg.getRead());
         kafkaTemplate.send(kafkaMsg.getTopic(),kafkaMsg.getEmail(),msg);
 
+    }
+
+    @Override
+    public void makeEnable(String email) {
+        String userName = "Amin";
+        UserEntity user = userRepo.findUserByUserName(userName);
+        user.setEnabled(true);
+        userRepo.save(user);
+        log.info(userName + " is enabled");
     }
 }

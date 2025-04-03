@@ -1,7 +1,6 @@
 package com.UserService.User.Controller;
 
-import com.UserService.User.Dto.PersonDto;
-import com.UserService.User.Dto.PersonForm;
+import com.UserService.User.Dto.UserDto;
 import com.UserService.User.Dto.PersonResponse;
 import com.UserService.User.Dto.RegisterForm;
 import com.UserService.User.Service.PersonService;
@@ -15,8 +14,8 @@ public class PersonController {
         this.personService = personService;
     }
     @GetMapping("/getall")
-    public PersonResponse<PersonDto> getAll() {
-        return personService.getAll(5,1);
+    public PersonResponse<UserDto> getAll() {
+        return personService.getAll(20,1);
     }
     @PostMapping("/register")
     public String register(@RequestBody RegisterForm registerForm)throws Exception{

@@ -3,11 +3,13 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.EmailVerfication.EmaiService.Config.DigitCode;
+import com.EmailVerfication.EmaiService.Dto.KafkaMsg;
 import com.EmailVerfication.EmaiService.Kafka.KafkaService;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,17 +24,17 @@ public class EmailServiceImpl implements EmailService {
     private final JwtService jwtService;
     private final JavaMailSender mailSender;
     private final DigitCode digitCode;
-    private final KafkaService kafkaService;
+    private final KafkaTemplate<String, String> kafkaTemplate;
     public EmailServiceImpl(
             JwtService jwtService,
             DigitCode digitCode,
             JavaMailSender mailSender,
-            KafkaService kafkaService
+            KafkaTemplate<String, String> kafkaTemplate
     ) {
         this.jwtService = jwtService;
         this.digitCode = digitCode;
         this.mailSender = mailSender;
-        this.kafkaService = kafkaService;
+        this.kafkaTemplate = kafkaTemplate;
     }
     @Override
     public String sendEmail(String email) {
@@ -65,7 +67,19 @@ public class EmailServiceImpl implements EmailService {
     }
     @Override
     public boolean verify(String email,String code){
-        return digitCode.verify(email,code);
+        if(digitCode.verify(email,code)){
+            KafkaMsg kafkaMsg = new KafkaMsg();
+            kafkaMsg.setEmail(email);
+            kafkaMsg.setStatus(1);
+            kafkaMsg.setRead(0);
+            kafkaMsg.setTopic("verified");
+            String msg = String.format("%s,%d,%d",
+                    kafkaMsg.getEmail(),
+                    kafkaMsg.getStatus(),
+                    kafkaMsg.getRead());
+            kafkaTemplate.send(kafkaMsg.getTopic(),email,msg);
+        };
+        return false;
     }
     @Override
     public void readMsg() {

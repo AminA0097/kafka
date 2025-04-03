@@ -1,16 +1,18 @@
 package com.UserService.User.Dto;
 
 import com.UserService.User.Entities.PersonEntity;
+import com.UserService.User.Entities.UserEntity;
 
-public class PersonDto {
+public class UserDto {
     private boolean enabled;
+    private String userName;
     private String email;
     private String name;
-    private Integer id;
-    public PersonDto(PersonEntity personEntity) {
-        this.email = personEntity.getEmail();
-        this.name = personEntity.getName();
-        this.id = personEntity.getId();
+    public UserDto(UserEntity userEntity) {
+        this.enabled = userEntity.getEnabled();
+        this.userName = userEntity.getUserName();
+        this.email = userEntity.getPersonEntity().getEmail();
+        this.name = userEntity.getPersonEntity().getName();
     }
 
     public boolean isEnabled() {
@@ -19,6 +21,14 @@ public class PersonDto {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
@@ -35,13 +45,5 @@ public class PersonDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }
