@@ -19,14 +19,14 @@ public class DigitCode {
     private long getTime() {
         return System.currentTimeMillis() / (expiryTime * 1000 * 60);
     }
-    private String encode(String email) {
+    private String encode(String userName) {
         long time = getTime();
         long code = 0;
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
             mac.init(secretKeySpec);
-            String input = email + time;
+            String input = userName + time;
             byte[] hash = mac.doFinal(input.getBytes());
 
             for (int i = 0; i < count; i++) {

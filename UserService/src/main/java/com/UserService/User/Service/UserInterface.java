@@ -1,10 +1,7 @@
 package com.UserService.User.Service;
 
-import com.UserService.User.Forms.RegisterForm;
+import com.UserService.User.Forms.*;
 import com.UserService.User.Dto.UserDto;
-import com.UserService.User.Forms.ForgotPassWordForm;
-import com.UserService.User.Forms.emailServiceForm;
-import com.UserService.User.Forms.loginForm;
 import com.UserService.User.Res.UserResponse;
 
 public interface UserInterface {
@@ -14,4 +11,5 @@ public interface UserInterface {
     boolean changeUserStatus(String userName)throws Exception;
     UserResponse<UserDto> getAllUsers(Integer pageSize, Integer pageNumb)throws Exception;
     boolean sendEmail(String email,String reason)throws Exception;
+    boolean verifyEmail(VerifyForm verifyForm)throws Exception;
 }

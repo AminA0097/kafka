@@ -1,7 +1,6 @@
 package com.UserService.User.Controller;
 
-import com.UserService.User.Dto.UserDto;
-import com.UserService.User.Res.PersonResponse;
+import com.UserService.User.Forms.VerifyForm;
 import com.UserService.User.Forms.RegisterForm;
 import com.UserService.User.Service.UserInterface;
 import org.springframework.web.bind.annotation.*;
@@ -18,5 +17,8 @@ public class PersonController {
         userInterface.register(registerForm);
         return String.format("Successfully registered: %s", registerForm.getName());
     }
-
+    @PostMapping("/verifyAccount")
+    public boolean chabgeStatus(@RequestBody VerifyForm verifyForm)throws Exception{
+        return userInterface.verifyEmail(verifyForm);
+    }
 }

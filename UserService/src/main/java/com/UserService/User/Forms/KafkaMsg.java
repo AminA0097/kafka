@@ -11,7 +11,7 @@ public class KafkaMsg {
 
     @Override
     public String toString() {
-        return subject + "," + body;
+        return subject + "S!--!B" + body;
     }
 }
 

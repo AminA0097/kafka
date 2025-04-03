@@ -1,6 +1,6 @@
 spring:
-  count : 5
-  secretKey : "Amin"
+  count : 8
+  secretKey : "KafkaMicroservice"
   expiryTime : 5
   datasource:
     url: jdbc:postgresql://localhost:5432/kafkaDb
@@ -9,7 +9,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:

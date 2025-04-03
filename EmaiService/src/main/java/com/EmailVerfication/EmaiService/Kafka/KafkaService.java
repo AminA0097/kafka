@@ -17,7 +17,7 @@ public class KafkaService {
     }
     @KafkaListener(topics = "incomingTopic")
     public void listen(ConsumerRecord<String, String> record) {
-        String[] data = record.value().split(",");
+        String[] data = record.value().split("S!--!B");
         EmailReq emailReq = new EmailReq(
                 record.key(),
                 data[0],

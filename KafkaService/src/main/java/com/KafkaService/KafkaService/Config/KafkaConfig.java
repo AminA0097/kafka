@@ -34,7 +34,7 @@ public class KafkaConfig {
     @Bean
     public NewTopic UnverifiedTopic() throws ExecutionException, InterruptedException {
         if (!checkTopic(incomingTopic)) {
-            log.info("Creating Unverified Topic");
+            log.info("Creating incomingTopic Topic");
             return TopicBuilder.name(incomingTopic)
                     .partitions(3)
                     .replicas(1)

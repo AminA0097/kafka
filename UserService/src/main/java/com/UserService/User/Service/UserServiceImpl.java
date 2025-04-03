@@ -1,9 +1,6 @@
 package com.UserService.User.Service;
 import com.UserService.User.Configs.DigitCode;
-import com.UserService.User.Forms.ForgotPassWordForm;
-import com.UserService.User.Forms.KafkaMsg;
-import com.UserService.User.Forms.RegisterForm;
-import com.UserService.User.Forms.loginForm;
+import com.UserService.User.Forms.*;
 import com.UserService.User.Mapper.EmailTemp;
 import com.UserService.User.Res.UserResponse;
 import com.UserService.User.Validation.PassWordConfig;
@@ -87,7 +84,7 @@ public class UserServiceImpl implements UserInterface {
 //        Save User
         UserEntity userEntity = new UserEntity();
         userEntity.setUserName(registerForm.getUserName());
-        userEntity.setEnabled(true);
+        userEntity.setEnabled(false);
         userEntity.setPersonEntity(PersonRes);
         userEntity.setPassWord(passWordConfig.PassWordConfig().encode(registerForm.getPassword()));
         userRepo.save(userEntity);
@@ -99,12 +96,12 @@ public class UserServiceImpl implements UserInterface {
     public boolean sendEmail(String email,String reason) throws Exception {
         String subject = EmailTemp.getSubject(reason);
         String body = EmailTemp.getBody(reason);
-        if(reason == "OTP"){
+        if(reason.equals("OTP")){
             String content = digitCode.getCode(email);
-            body.replace("{content}",content);
+            body = body.replace("OTPCODE",content);
         }
         KafkaMsg kafkaMsg = new KafkaMsg();
-        kafkaMsg.setSubject(reason);
+        kafkaMsg.setSubject(subject);
         kafkaMsg.setBody(body);
         String msg = kafkaMsg.toString();
         try {
@@ -118,21 +115,26 @@ public class UserServiceImpl implements UserInterface {
     }
 
     @Override
+    public boolean verifyEmail(VerifyForm verifyForm) throws Exception {
+        if(digitCode.verify(verifyForm.getEmail(),verifyForm.getCode())){
+            changeUserStatus(verifyForm.getUserName());
+        };
+        throw new Exception("Invalid email");
+    }
+    @Override
+    public boolean changeUserStatus(String userName) {
+        UserEntity user = userRepo.findUserByUserName(userName);
+        user.setEnabled(!user.getEnabled());
+        userRepo.save(user);
+        log.info("User changed successfully");
+        return true;
+    }
+
+    @Override
     public UserResponse<UserDto> getAllUsers(Integer pageSize, Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber -1 , pageSize);
         Page<UserEntity> all = userRepo.findAll(pageable);
         return null;
-    }
-
-
-
-    @Override
-    public boolean changeUserStatus(String userName) {
-        UserEntity user = userRepo.findUserByUserName(userName);
-        user.setEnabled(true);
-        userRepo.save(user);
-        log.info(userName + " is enabled");
-        return true;
     }
 
     @Override
