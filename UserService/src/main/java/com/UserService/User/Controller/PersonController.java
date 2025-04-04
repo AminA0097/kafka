@@ -1,6 +1,7 @@
 package com.UserService.User.Controller;
 
 import com.UserService.User.Dto.UserDto;
+import com.UserService.User.Forms.ForgotPassWordForm;
 import com.UserService.User.Forms.VerifyForm;
 import com.UserService.User.Forms.RegisterForm;
 import com.UserService.User.Res.AnyEntityResponse;
@@ -19,9 +20,20 @@ public class PersonController {
         userInterface.register(registerForm);
         return String.format("Successfully registered: %s", registerForm.getName());
     }
-    @PostMapping("/verifyAccount")
-    public boolean chabgeStatus(@RequestBody VerifyForm verifyForm)throws Exception{
-        return userInterface.verifyEmail(verifyForm);
+    @PostMapping("/resetpassword")
+    public String resetPassWord(@RequestBody ForgotPassWordForm forgotPassWordForm)throws Exception{
+        userInterface.forgotPassWord(forgotPassWordForm);
+        return String.format("Successfully registered: %s", forgotPassWordForm.getUserName());
+    }
+    @PostMapping("/verify")
+    public String verify(@RequestBody VerifyForm verifyForm )throws Exception{
+        userInterface.verifyEmail(verifyForm);
+        return String.format("Successfully registered: %s", verifyForm.getUserName());
+    }
+    @PostMapping("/changestatus")
+    public String verify(@RequestParam String userName)throws Exception{
+        userInterface.changeUserStatus(userName);
+        return String.format("Successfully registered: %s", userName);
     }
     @GetMapping("/alluser")
     public AnyEntityResponse<UserDto> chabgeStatus()throws Exception{

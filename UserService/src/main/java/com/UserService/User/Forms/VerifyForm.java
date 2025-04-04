@@ -7,4 +7,6 @@ public class VerifyForm {
     private String code;
     private String email;
     private String userName;
+    private String reason;
+    private String passWord;
 }

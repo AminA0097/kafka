@@ -43,7 +43,7 @@ public class DigitCode {
         }
         throw new Exception("");
     }
-    public String getCode(String email) {
+    public String getCode(String email)throws Exception {
         return encode(email);
     }
 }

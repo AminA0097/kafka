@@ -90,6 +90,7 @@ public class UserServiceImpl implements UserInterface {
         userRepo.save(userEntity);
 //        Send Confirm Code
         sendEmail(registerForm.getEmail(),"OTP");
+//        Verify Account
         return true;
     }
     @Override
@@ -116,12 +117,21 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public boolean verifyEmail(VerifyForm verifyForm) throws Exception {
-        if(digitCode.verify(verifyForm.getEmail(),verifyForm.getCode())){
-            UserEntity user = userRepo.findUserByUserName(verifyForm.getUserName());
-            user.setEnabled(true);
-            userRepo.save(user);
+        if(!digitCode.verify(verifyForm.getEmail(),verifyForm.getCode())){
+            throw new Exception("Failed to verify email");
         };
-        throw new Exception("Failed to verify email");
+        UserEntity user = userRepo.findUserByUserName(verifyForm.getUserName());
+        if (user == null) {
+            throw new Exception("User does not exist");
+        }
+        if(verifyForm.getReason().equals("OTP")){
+            user.setEnabled(true);
+        }
+        if(verifyForm.getReason().equals("CHANGEPASSWORD")){
+            user.setPassWord(passWordConfig.PassWordConfig().encode(verifyForm.getPassWord()));
+        }
+        userRepo.save(user);
+        return true;
     }
     @Override
     public boolean changeUserStatus(String userName) {
@@ -146,6 +156,13 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public boolean forgotPassWord(ForgotPassWordForm forgotPassWordForm) throws Exception {
-        return false;
+        if(!forgotPassWordForm.getPassword().equals(forgotPassWordForm.getConfirmPassword())) {
+            throw new Exception("Passwords do not match");
+        }
+        if(!passWordValidator.isValid(forgotPassWordForm.getPassword(),null)){
+            throw new Exception("Invalid password");
+        }
+        sendEmail(forgotPassWordForm.getEmail(),"OTP");
+        return true;
     }
 }
